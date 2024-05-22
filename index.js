@@ -10,6 +10,11 @@ const cookieParser = require("cookie-parser");
 const app = express();
 const memoryStore = new session.MemoryStore();
 
+const corsConfig = {
+  origin: "*",
+  credential: true,
+  methods: ["GET", "POST", "PUT", "DELETE"],
+};
 db.sequelize
   .sync()
   .then(() => {
@@ -31,9 +36,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use("/api", indexRouter);
-app.use(cors());
-app.options("*", cors());
-
+app.options("", cors(corsConfig));
+app.use(cors(corsConfig));
 app.get("/", (req, res) => {
   return res.status(200).send({ msg: "Working" });
 });
